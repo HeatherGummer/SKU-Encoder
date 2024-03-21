@@ -163,9 +163,11 @@ def main():
                     placeholder='Enter a 3-digit numeric sequence'
                 )
 
-                if st.button(label='generate'):
-                    stuff = output + seq
-                    barcode(stuff)
+                if seq:
+                    st.link_button(
+                        label='gen_button',
+                        url=f'https://barcodeapi.org/api/dm/{output + seq}?dpi=300' 
+                    )
 
                 if st.button(label='Press to Copy'):
                     stuff = output + seq
