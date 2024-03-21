@@ -2,7 +2,7 @@ import pandas as pd
 
 options = ('A','C','E','F','G','H','I','J','K','L','M','N','P','R','T','U','W','X','Y','0','1','2','3','4','5','6','7','8','9')
 
-dataset = pd.read_csv('Book1.txt',delimiter="\t",na_filter=False)
+dataset = pd.read_csv('dict_options.txt',delimiter="\t",na_filter=False)
 
 cols = dataset.keys()
 
