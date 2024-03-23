@@ -13,15 +13,31 @@ def addToClipBoard(text):
     command = 'echo ' + text.strip() + '| clip'
     os.system(command)
 
-def barcode(var):
+def barcode(var, prod_name):
     url = f'https://barcodeapi.org/api/dm/{var}?dpi=300'
 
     response = rq.get(url, stream=True)
 
-    with open(f'{var}.png', 'wb') as out_file:
+    with open(f'DM-{prod_name}-{var}.png', 'wb') as out_file:
         shutil.copyfileobj(response.raw, out_file)
     
     del response
+
+def decode(string):
+    dict_keys = dict_decode.keys()
+    iter_counter = 0
+    decoded = ''
+
+    for key in dict_keys:
+        string_2 = string[iter_counter]
+        try:
+            val = str(dict_decode[key][string_2.upper()]).title()
+            decoded += val + ' '
+        except:
+            continue
+        iter_counter += 1
+
+    return decoded
 
 def main():
     # dict_base = create_dict.main()
@@ -163,11 +179,16 @@ def main():
                     placeholder='Enter a 3-digit numeric sequence'
                 )
 
-                if seq:
-                    st.link_button(
-                        label='gen_button',
-                        url=f'https://barcodeapi.org/api/dm/{output + seq}?dpi=300' 
-                    )
+                prod_name = st.text_input(
+                    label='Name',
+                    key='prod_name',
+                    placeholder='Enter a name here...',
+                    label_visibility='hidden'
+                )       
+
+                if st.button(label='generate') and prod_name:
+                    stuff = output + seq
+                    barcode(stuff, prod_name)
 
                 if st.button(label='Press to Copy'):
                     stuff = output + seq
@@ -185,7 +206,7 @@ def main():
             key='decode',
             placeholder='Enter the SKU to decode...',
             label_visibility='hidden'
-        )
+        ) 
 
         if string:
             iter_counter = 0
