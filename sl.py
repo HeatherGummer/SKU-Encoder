@@ -4,16 +4,21 @@ import os
 import requests as rq
 import shutil
 
+# == Generate Dictionaries == #
+
+# read the dict from the text file via the module
 dicts = create_dict.main()
 
+# generate the encoding and decoding dicts
 dict_base = dicts[0]
 dict_decode = dicts[1]
 
-def addToClipBoard(text):
+
+def addToClipBoard(text): # copy the output to your clipboard
     command = 'echo ' + text.strip() + '| clip'
     os.system(command)
 
-def barcode(var, prod_name):
+def barcode(var, prod_name): # generate and export the response
     url = f'https://barcodeapi.org/api/dm/{var}?dpi=300'
 
     response = rq.get(url, stream=True)
@@ -23,7 +28,8 @@ def barcode(var, prod_name):
     
     del response
 
-def decode(string):
+def decode(string): # Provide the decoding as a list rather than 
+    # as a dict
     dict_keys = dict_decode.keys()
     iter_counter = 0
     decoded = ''
@@ -40,12 +46,13 @@ def decode(string):
     return decoded
 
 def main():
-    # dict_base = create_dict.main()
-
+    # create a list of the labels used in the main dict
     labels = list(dict_base.keys())
 
+    # initialize the output variable
     output = ''
 
+    # initiate the iterator variable
     l_iter = 0
 
 # == Start Streamlit App Coding == #
@@ -63,18 +70,20 @@ def main():
 
     with tab_1:
     
-        col_1, col_2 = st.columns(2)
+        col_1, col_2 = st.columns(2) # create two columns
 
         with col_1:            
             cat_name = st.selectbox(
+                # create a slection box
                 label=labels[l_iter].title().replace('_', ' ')
+                # pull the options from the dictionary
                 , options=dict_base[labels[l_iter]]
                 , index=None
                 , key=labels[l_iter]
                 , placeholder='Choose from the below...'
             )
 
-            if cat_name:
+            if cat_name: # if there is a category name
                 output += str(dict_base[labels[l_iter]][cat_name])
             else:
                 output += 'A'
